@@ -54,5 +54,44 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    
+    private class DownloadData extends AsyncTask<String, Void, String> {
+        private String fileContents;
+        @Override
+        protected String doInBackground(String... params) {
+            fileContents = downloadXmlFile(params[0]);
+            if(fileContents==null){
+                Log.d("DownloadData", "Error Downloading");
+            }
+            return fileContents;
+        }
+
+        private String downloadXmlFile(String urlPath) {
+            StringBuilder tempBuffer = new StringBuilder();
+            try {
+                URL url = new URL(urlPath);//stores the urlPath in url variable..tells java that it is a URL
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //attempts to open a HTTP connection
+                int response = connection.getResponseCode(); //response to show what response code is returned
+                Log.d("DownloadData", "Error "+response); // for programmer to see what the response is
+                InputStream inputStream = connection.getInputStream(); // opens an input stream for the data in the url
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream); // reads the data in the url
+
+                //the download operation occurs below
+                int charRead;
+                char[] inputBuffer = new char[500];
+                while(true){
+                    charRead = inputStreamReader.read(inputBuffer);
+                    if(charRead <= 0){
+                        break;
+                    }
+                    tempBuffer.append(String.copyValueOf(inputBuffer, 0, charRead));
+                }
+
+                return tempBuffer.toString();
+
+            }catch (IOException e){
+                Log.d("DownloadData", "IO exception reading data: "+e.getMessage());
+            }
+            return null;
+        }
+    }
 }
