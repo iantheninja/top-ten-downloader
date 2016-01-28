@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,12 +19,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-
+private TextView tvXml;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        tvXml = (TextView) findViewById(R.id.tvXml);
+        DownloadData downloadData = new DownloadData();
+        downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStore.woa/wpa/MRSS/newreleases/limit=10/rss.xml");
+        //execute method is inbuilt into the async task and starts executing the task
+
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -65,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
             return fileContents;
         }
 
+        @Override
+        protected void onPostExecute(String result) {//used when you need to enter info into the UI/layout
+            super.onPostExecute(result);
+            Log.d("DownloadData", "Result is: " + result);
+            tvXml.setText(fileContents);
+        }
+
         private String downloadXmlFile(String urlPath) {
             StringBuilder tempBuffer = new StringBuilder();
             try {
@@ -90,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
             }catch (IOException e){
                 Log.d("DownloadData", "IO exception reading data: "+e.getMessage());
+            }catch (SecurityException e){
+                Log.d("DownloadData", "Security exception " + e.getMessage());
             }
             return null;
         }
