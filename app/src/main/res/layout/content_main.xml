@@ -12,9 +12,24 @@
     tools:context="com.iantheninja.top10downloader.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/tvXml"/>
+        android:text="@string/parseXml"
+        android:id="@+id/btnParse"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvXml"
+        android:layout_toEndOf="@+id/btnParse"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnParse"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="@+id/btnParse"
+        android:layout_alignParentEnd="@+id/btnParse"/>
 </RelativeLayout>
