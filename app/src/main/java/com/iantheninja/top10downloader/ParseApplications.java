@@ -15,7 +15,7 @@ public class ParseApplications {
 
     public ParseApplications(String xmlData) {
         this.xmlData = xmlData;
-        this.applications = new ArrayList<Application>();
+        this.applications = new ArrayList<>();
     }
 
     public ArrayList<Application> getApplications() {
@@ -46,7 +46,7 @@ public class ParseApplications {
                             break;
                         }
                     case XmlPullParser.END_TAG:
-                        Log.d("ParseApplications", "Starting tag for " + tagName);
+                        Log.d("ParseApplications", "Ending tag for " + tagName);
                         break;
                     default:
                         // functionality to be added later
