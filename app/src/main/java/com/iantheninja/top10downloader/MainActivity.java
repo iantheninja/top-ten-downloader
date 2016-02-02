@@ -2,15 +2,14 @@ package com.iantheninja.top10downloader;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.ListView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,27 +18,32 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-private TextView tvXml;
+    private ListView lvXml;
+    private Button btnParse;
+    private String fileContents;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        tvXml = (TextView) findViewById(R.id.tvXml);
+        lvXml = (ListView) findViewById(R.id.lvXml);
+        btnParse = (Button) findViewById(R.id.btnParse);
+
+        btnParse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseApplications parseApplications = new ParseApplications(fileContents);
+                parseApplications.process();
+            }
+        });
+
         DownloadData downloadData = new DownloadData();
-        downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStore.woa/wpa/MRSS/newreleases/limit=10/rss.xml");
+        downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
         //execute method is inbuilt into the async task and starts executing the task
 
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
@@ -61,7 +65,6 @@ private TextView tvXml;
         return super.onOptionsItemSelected(item);
     }
     private class DownloadData extends AsyncTask<String, Void, String> {
-        private String fileContents;
         @Override
         protected String doInBackground(String... params) {
             fileContents = downloadXmlFile(params[0]);
@@ -75,7 +78,6 @@ private TextView tvXml;
         protected void onPostExecute(String result) {//used when you need to enter info into the UI/layout
             super.onPostExecute(result);
             Log.d("DownloadData", "Result is: " + result);
-            tvXml.setText(fileContents);
         }
 
         private String downloadXmlFile(String urlPath) {
@@ -84,7 +86,7 @@ private TextView tvXml;
                 URL url = new URL(urlPath);//stores the urlPath in url variable..tells java that it is a URL
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //attempts to open a HTTP connection
                 int response = connection.getResponseCode(); //response to show what response code is returned
-                Log.d("DownloadData", "Error "+response); // for programmer to see what the response is
+                Log.d("DownloadData", "response "+response); // for programmer to see what the response is
                 InputStream inputStream = connection.getInputStream(); // opens an input stream for the data in the url
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream); // reads the data in the url
 
