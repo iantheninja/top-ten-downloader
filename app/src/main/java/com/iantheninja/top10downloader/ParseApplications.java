@@ -24,7 +24,7 @@ public class ParseApplications {
 
     public boolean process(){
         boolean status = true;
-        Application currentRecord;
+        Application currentRecord = null;
         boolean inEntry = false;
         String textValue = "";
 
@@ -39,18 +39,34 @@ public class ParseApplications {
                 String tagName = xmlPullParser.getName(); //gets the name of the tag
                 switch (eventType){
                     case XmlPullParser.START_TAG:
-                        Log.d("ParseApplications", "Starting tag for " + tagName);
                         if (tagName.equalsIgnoreCase("entry")){
                             inEntry = true; // entry encountered
                             currentRecord = new Application(); //denotes a new application in the list
                         }
                         break;
+                    case XmlPullParser.TEXT:
+                        textValue = xmlPullParser.getText();
+                        break;
+
                     case XmlPullParser.END_TAG:
-                        Log.d("ParseApplications", "Ending tag for " + tagName);
+                        if (inEntry) {
+                            if (tagName.equalsIgnoreCase("entry")) {
+                                applications.add(currentRecord);
+                                inEntry = false;
+                            } else if (tagName.equalsIgnoreCase("name")) {
+                                currentRecord.setName(textValue); //sets the name (of app) from xml data
+                            } else if (tagName.equalsIgnoreCase("artist")) {
+                                currentRecord.setArtist(textValue); //sets the artist/author's from xml data
+                            } else if (tagName.equalsIgnoreCase("releasedate")) {
+                                currentRecord.setReleaseDate(textValue); //sets the name from xml data
+                            }
+                        }
                         break;
                     default:
+
                         // functionality to be added later
                 }
+
                 eventType = xmlPullParser.next(); // continues to the next section
             }
 
@@ -58,6 +74,14 @@ public class ParseApplications {
             status = false;
             e.printStackTrace();
         }
+
+        for (Application app: applications){
+            Log.d("ParseApplications", "************");
+            Log.d("ParseApplications", "Name is " + app.getName());
+            Log.d("ParseApplications", "Artist is " + app.getArtist());
+            Log.d("ParseApplications", "Release Date " + app.getReleaseDate());
+        }
+
         return true;
     }
 }
