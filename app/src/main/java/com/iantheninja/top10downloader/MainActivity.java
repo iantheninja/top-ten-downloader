@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -36,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ParseApplications parseApplications = new ParseApplications(fileContents);
                 parseApplications.process();
+
+                //parse the data to array adapter to be adapted to list view
+                ArrayAdapter<Application> arrayAdapter = new ArrayAdapter<Application>(
+                        MainActivity.this, R.layout.list_item, parseApplications.getApplications());
+                lvXml.setAdapter(arrayAdapter);
             }
         });
 
