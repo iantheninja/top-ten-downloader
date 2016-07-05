@@ -13,7 +13,7 @@
     tools:showIn="@layout/activity_main">
 
 
-    <Button
+    <Buttoni
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/parseXml"
